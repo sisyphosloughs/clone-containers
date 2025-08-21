@@ -7,18 +7,18 @@ source "$(dirname "$(realpath "$0")")/bash-functions/init.sh"
 source "$(dirname "$(realpath "$0")")/bash-functions/functions.sh"
 source "$(dirname "$(realpath "$0")")/bash-functions/setup_logger.sh"
 
-db_wrapper() {
+clone_wrapper() {
     
-    # Datenbank-Konfiguration einlesen
+    # Konfiguration einlesen
     source_conf "$1"
 
-    # Prüfe ob Sicherung übersprungen werden soll
+    # Prüfe ob eine Instanz übersprungen werden soll
     if [ "${SKIP:-}" == "true" ]; then
         echo "[INFO] Überspringe: '$STACKNAME'"
         return 0
     fi
 
-    # Zielpfad für Datenbank erstellen; Erstellung prüfen
+    # Zielpfad Clone erstellen; Erstellung prüfen
     if [ ! -d "$BACKUP_FOLDER" ]; then
         echo "[INFO] Erstelle Order für Sicherungen: '$BACKUP_FOLDER'"
         mkdir -p "$BACKUP_FOLDER"  || { error_continue; return 1; }
@@ -62,7 +62,7 @@ check_instances
 
 # Durchläuft alle .conf Dateien im Verzeichnis
 for file in "${INSTANCES[@]}"; do
-    db_wrapper "$file"
+    clone_wrapper "$file"
 done
 
 # Ende
