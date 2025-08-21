@@ -2,6 +2,8 @@
 
 # Name
 NAME="vaultwarden"
+# Überspringen, setzte hierfür SKIP="true"
+# SKIP="true"
 # Pfad, der gesichert werden soll
 RC_SOURCE_FOLDER="/volume1/Backup/Milos/containers/$NAME"
 # Remote-Name
