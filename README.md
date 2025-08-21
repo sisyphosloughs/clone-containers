@@ -63,12 +63,6 @@ TELEGRAM_SEND=true
 
 ### Installation
 
-1. Laden Sie das Skript zusammen mit dem Unterordner `bash-functions` herunter.
-2. Erstellen Sie Konfigurationsdateien.
-3. Testen Sie das Backup.
-
-## Überwachung
-
-```bash
-journalctl -t backupdb.sh
-```
+1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
+2. Erstelle Konfigurationsdateien.
+3. Teste das das Backup.
