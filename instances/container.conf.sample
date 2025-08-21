@@ -1,0 +1,10 @@
+# Konfiguration für einen Container
+
+# Name
+NAME="vaultwarden"
+# Pfad, der gesichert werden soll
+RC_SOURCE_FOLDER="/volume1/Backup/Milos/containers/$NAME"
+# Remote-Name
+RC_REMOTE_NAME="$NAME"
+# Zielpfad
+RC_REMOTE_FOLDER="/var/local/data/clones/$NAME"
