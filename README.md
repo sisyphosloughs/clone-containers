@@ -1,6 +1,6 @@
-# Webserver-Backup von Datenbanken
+# Clone Contaisers
 
-`backupdb.sh` ist ein Skript zur Automatisierung des Backups von Datenbanken, die in Docker-Containern betrieben werden. Es unterstützt MariaDB- und SQLite-Datenbanken und bietet die Möglichkeit, Backup-Benachrichtigungen über Telegram zu versenden. Das Skript liest Konfigurationsdateien aus, die spezifische Angaben zu jeder Datenbank enthalten, um ein Backup durchzuführen.
+`clone-containers.sh` ist ein Skript zur Automatisierung des Backups von Docker-Containern betrieben. Dabei werden die Container heruntergefahren, um sie vollständig kopieren zu können. Das Skript liest Konfigurationsdateien aus, die spezifische Angaben zu jedem Container enthalten, um ein Backup durchzuführen.
 
 Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Backups ermöglicht.
 
@@ -15,16 +15,16 @@ Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Back
 Für die Funktionsfähigkeit des Skripts müssen die folgenden Dateien bearbeitet werden:
 
 ```
-├── backupdb.sh
+├── clone-contaiers.sh
 ├── bash-functions
 │   ├── functions.sh
 │   ├── init.sh
 │   ├── README.md
 │   └── setup_logger.sh
 ├── instances
-│   ├── mariadb1.conf  <-- Instanz-Konfigurationsdatei
-│   ├── mariadb2.conf  <-- Instanz-Konfigurationsdatei
-│   └── sqlite.conf    <-- Instanz-Konfigurationsdatei
+│   ├── container1.conf  <-- Instanz-Konfigurationsdatei
+│   ├── container2.conf  <-- Instanz-Konfigurationsdatei
+│   └── container3.conf    <-- Instanz-Konfigurationsdatei
 ├── README.md
 └── telegram.secrets   <-- Telegram-Konfiguration
 ```
@@ -35,46 +35,17 @@ Das Skript erwartet Konfigurationsdateien im Ordner `instances` mit der Endung `
 
 Jede Konfigurationsdatei enthält Schlüssel-Wert-Paare, die das Skript für das Durchführen des Backups benötigt. Die Schlüssel und ihre Bedeutungen werden nachfolgend erläutert:
 
-#### MariaDB-Konfiguration
+#### Beispiel
 
 ```conf
-# Überspringen, setzte hierfür SKIP="true"
-# SKIP="true"
-# Der Typ der Datenbank, unterstützt "mariadb"
-DB_TYP="mariadb"
-# Der Name des Stacks, wird für Container-Namen und Pfade verwendet
-STACKNAME="example-stack" 
-# Der Pfad, wo der Docker-Stack gespeichert ist
-STACKPATH="/opt/containers/example-stack/"
-# Der Name des Datenbank-Containers, abgeleitet vom Stack-Namen
-DB_CONTAINER="${STACKNAME}-db"
-# Der Benutzername für die Datenbank-Anmeldung
-DB_USER="username"
-# Das Passwort für den Datenbank-Benutzer, ausgelesen aus einer Datei
-DB_PASSWORD="$(< "$STACKPATH/mysql_root.secret")"
-# Die Parameter für den Dump-Befehl
-DB_PARAMS="--all-databases --single-transaction --skip-lock-tables" 
-# Der Zielpfad für das Backup
-BACKUP_FOLDER="/path/to/backups/"
-# Der Dateiname für das Backup
-BACKUP_FILE="$BACKUP_FOLDER/${DB_CONTAINER}.sql" 
-```
-
-#### SQLite-Konfiguration
-
-```conf
-# Der Typ der Datenbank, unterstützt "sqlite"
-DB_TYP="sqlite"
-# Der Name des Stacks, wird für Container-Namen und Pfade verwendet
-STACKNAME="example-stack" 
-# Der Pfad, wo der Docker-Stack gespeichert ist
-STACKPATH="/opt/containers/$STACKNAME/"
-# Der Pfad und Name der SQLite-Datenbankdatei
-DB_FILE="$STACKPATH/data/db.sqlite3"
-# Der Zielpfad für das Backup
-BACKUP_FOLDER="/path/to/backups/"
-# Der Dateiname für das Backup
-BACKUP_FILE="$BACKUP_FOLDER/$STACKNAME.sqlite3"
+# Name
+NAME="vaultwarden"
+# Pfad, der gesichert werden soll
+RC_SOURCE_FOLDER="/volume1/Backup/Milos/containers/$NAME"
+# Remote-Name
+RC_REMOTE_NAME="$NAME"
+# Zielpfad
+RC_REMOTE_FOLDER="/var/local/data/clones/$NAME"
 ```
 
 ### Telegram-Konfiguration
@@ -101,7 +72,3 @@ TELEGRAM_SEND=true
 ```bash
 journalctl -t backupdb.sh
 ```
-
-## Anpassung
-
-Falls Sie weitere Datenbanktypen unterstützen möchten, können Sie dafür eine Funktion schreiben und den Aufruf in die Funktion `db_wrapper` integrieren. In den entsprechenden Konfigurationsdateien muss der Typ im Schlüssel `DB_TYP` angegeben werden.
