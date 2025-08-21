@@ -1,0 +1,16 @@
+# Konfiguration für eine SQLLite-Datenbank
+
+# Überspringen, setzte hierfür SKIP="true"
+# SKIP="true"
+# Typ
+DB_TYP="sqlite"
+# Name des Stacks, wird für Container-Namen und Pfade verwendet
+STACKNAME="nginx-proxy-manager" 
+# Pfad, wo der Stack gespeichert ist
+STACKPATH="/opt/containers/$STACKNAME"
+# Prad und Name der Datenbank
+DB_FILE="$STACKPATH/data/database.sqlite"
+# Zielpfad für das Backup
+BACKUP_FOLDER="/home/shanty/db-backups/"
+# Dateiname für Backup
+BACKUP_FILE="$BACKUP_FOLDER/$STACKNAME.sqlite" 

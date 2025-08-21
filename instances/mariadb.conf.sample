@@ -1,0 +1,22 @@
+# Konfiguration für eine Maria-Datenbank
+
+# Überspringen, setzte hierfür SKIP="true"
+SKIP="true"
+# Typ
+DB_TYP="mariadb"
+# Name des Stacks, wird für Container-Namen und Pfade verwendet
+STACKNAME="wp-benjamin" 
+# Pfad, wo der Stack gespeichert ist
+STACKPATH="/opt/containers/wp-benjamin/"
+# Name des Datenbank-Containers, abgeleitet vom Stack-Namen
+DB_CONTAINER="${STACKNAME}-db"
+# Benutzername für die Datenbank-Anmeldung
+DB_USER="root"
+# Passwort für den Datenbank-Benutzer, ausgelesen aus einer Datei
+DB_PASSWORD="$(< "$STACKPATH/mysql_root.secret")"
+# Parameter für den mysqldump Befehl
+DB_PARAMS="--all-databases --single-transaction --skip-lock-tables" 
+# Zielpfad für das Backup
+BACKUP_FOLDER="/home/shanty/db-backups/"
+# Dateiname für Backup
+BACKUP_FILE="$BACKUP_FOLDER/$DB_CONTAINER.sql"
