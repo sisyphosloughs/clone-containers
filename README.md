@@ -2,7 +2,7 @@
 
 Clone Containers sind Skript zur Automatisierung des Backups von Docker-Containern. Ziel die Erstellung eines laufendens Docker-Duplikat.
 
-Die Synchronisierung erfolgt unidirektional mit `rclone`: Daten vom Quellcomputer (im Folgenden **Source-Computer**) werden auf den Sicherungscomputer (im Folgenden **Target-Computer**) vollständig übertragen. Dadurch sind Datenbanksicherungen nicht erforderlich. 
+Die Synchronisierung erfolgt unidirektional mit [Rclone](https://rclone.org): Daten vom Quellcomputer (im Folgenden **Source-Computer**) werden auf den Sicherungscomputer (im Folgenden **Target-Computer**) vollständig übertragen. Dadurch sind Datenbanksicherungen nicht erforderlich. 
 
 Bei der Synchronisierung kommen zwei Skripte zum Einsatz:
 
@@ -42,7 +42,7 @@ Bei der Synchronisierung kommen zwei Skripte zum Einsatz:
 - **Passwortlose Rclone-Konfiguration**: Richte `rclone`so ein, dass keine Passwortabfrage erforderlich ist.
 - Ein Telegram-API-Schlüssel und eine Telegram-Chat-ID für Benachrichtigungen.
 - Ein SFTP-Client für `rclone`als Ziel. Zur Minimierung der Angriffsfläche sollte kein SSH, sondern nur SFTP aktiviert sein.
-- Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Backups ermöglicht. Falls Syslog auf dem Computer nicht vorhanden ist, sind die Logdateien leer.
+- Für das Logging wird Syslog verwendet. Dadurch ist auch die Auswertung zurückliegender Backups möglich. Falls Syslog auf dem Computer nicht vorhanden ist, sind die Logdateien leer.
 
 ## Struktur
 
@@ -131,9 +131,9 @@ TELEGRAM_CHAT_ID="your_chat_id"
 TELEGRAM_SEND=true
 ```
 
-### Installation
+## Installation
 
-Source-Computer einrichten:
+### Source-Computer einrichten
 
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
 2. Mache die Skript-Datei ausführbar:
@@ -152,9 +152,10 @@ Source-Computer einrichten:
     50 5 * * * /home/user/bin/clone-containers/source/clone-containers.sh > /dev/null 2>&1
     ```
 
-Target-Computer einrichten:
+### Target-Computer einrichten
 
-**Hinweis**: Möglicherweise sind in der `docker-compose.yml` des Source-Computers Pfade oder andere Angaben enthalten, die nicht zum Target-Computer passen. In dem Fall solltest Du eine separate Docker-Konfiguration auf dem Target-Computer mit eigener `docker-compose.yml` anlegen.
+> [!NOTE]
+> Möglicherweise sind in der `docker-compose.yml` des Source-Computers Pfade oder andere Angaben enthalten, die nicht zum Target-Computer passen. In dem Fall solltest Du eine separate Docker-Konfiguration auf dem Target-Computer mit eigener `docker-compose.yml` anlegen.
 
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
 2. Mache die Skript-Datei ausführbar:
