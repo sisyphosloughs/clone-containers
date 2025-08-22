@@ -31,9 +31,9 @@ Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Back
 ## Voraussetzungen
 
 - Eine lauffähige Docker-Umgebung.
-- **Rclone Installation**: Must install Rclone. You can find installation instructions at [Rclone installation instructions](https://rclone.org/install/).
-- **Passwordless Rclone Configuration**: Configure without requiring a password.
-- Ein Telegram-API-Key und eine Telegram-Chat-ID für Benachrichtigungen.
+- **Rclone-Installation**: Rclone muss vorhanden sein. Installationsanweisungen findest Du unter [Rclone-Installationsanweisungen](https://rclone.org/install/).
+- **Passwortlose Rclone-Konfiguration**: Richte Rclone so ein, dass keine Passwortabfrage erforderlich ist.
+- Ein Telegram-API-Schlüssel und eine Telegram-Chat-ID für Benachrichtigungen.
 - Ein SFTP-Client für Rclone als Ziel. Zu Minimierung der Angriffsfläche sollte kein SSH, sondern nur SFTP aktiviert sein.
 
 ## Konfiguration
@@ -92,6 +92,6 @@ TELEGRAM_SEND=true
 ### Installation
 
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
-2. Erstelle Konfigurationsdateien.
-3. Teste das das Backup.
-4. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) auf dem Computer für das Script `clone-contaiers.sh`.
+2. Erstelle die Konfigurationsdateien.
+3. Teste das Backup.
+4. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) auf dem Computer für das Skript `clone-containers.sh`.
