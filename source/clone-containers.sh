@@ -58,9 +58,12 @@ clone_wrapper() {
     if [ $ERROR_FLAG -eq 1 ]; then
         echo "[INFO] Erstelle Datei: CLONE-FAILED"
         echo "Last sync attempt: $TIMESTAMP" > "$RC_SOURCE_FOLDER/CLONE-FAILED"
+        rclone copy "$RC_SOURCE_FOLDER/CLONE-FAILED" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER"
+
     else
         echo "[INFO] Erstelle Datei: CLONE-SUCCESS"
         echo "Last sync: $TIMESTAMP" > "$RC_SOURCE_FOLDER/CLONE-SUCCESS"
+        rclone copy "$RC_SOURCE_FOLDER/CLONE-SUCCESS" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER"
     fi
 
     # Instanz starten
