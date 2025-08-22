@@ -31,17 +31,37 @@ clone_wrapper() {
         echo "[INFO] Instanz gestoppt: $STACK"
     fi
 
-    # Perform synchronization
+    # Synchronisiere
     echo "[INFO] Sync $STACK"
     echo "--------------------------------------------------------"
     rclone sync "${RC_EXCEPTIONS[@]}" $RC_PARAMS "$RC_SOURCE_FOLDER" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER" || error_continue
     echo "--------------------------------------------------------"
+    # ERROR_FLAG setzen, wenn rclone Fehler zurückgibt
+    if [ $? -ne 0 ]; then
+        ERROR_FLAG=1
+    else
+        ERROR_FLAG=0
+    fi
 
-    # Perform check.
+    # Prüfe, ob die Synchronisation erfolgreich war
     echo "[INFO] Check $STACK"
     echo "--------------------------------------------------------"
     rclone check "${RC_EXCEPTIONS[@]}" $RC_PARAMS "$RC_SOURCE_FOLDER" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER" || error_continue
     echo "--------------------------------------------------------"
+    # ERROR_FLAG setzen, wenn rclone Fehler zurückgibt
+    if [ $? -ne 0 ]; then
+        ERROR_FLAG=1
+    fi
+
+    # FLAG-DATEI erstellen
+    TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+    if [ $ERROR_FLAG -eq 1 ]; then
+        echo "[INFO] Erstelle Datei: CLONE-FAILED"
+        echo "Last sync attempt: $TIMESTAMP" > "$RC_SOURCE_FOLDER/CLONE-FAILED"
+    else
+        echo "[INFO] Erstelle Datei: CLONE-SUCCESS"
+        echo "Last sync: $TIMESTAMP" > "$RC_SOURCE_FOLDER/CLONE-SUCCESS"
+    fi
 
     # Instanz starten
     echo "[INFO] Starte Instanz: $STACK"
