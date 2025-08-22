@@ -66,14 +66,20 @@ Jede Konfigurationsdatei enthält Schlüssel-Wert-Paare, die das Skript für das
 #### Beispiel
 
 ```conf
-# Name
-NAME="vaultwarden"
+# Stack-Name
+STACK="example"
+# Überspringen, setzte hierfür SKIP="true"
+# SKIP="true"
 # Pfad, der gesichert werden soll
-RC_SOURCE_FOLDER="/volume1/Backup/Milos/containers/$NAME"
-# Remote-Name
-RC_REMOTE_NAME="$NAME"
+RC_SOURCE_FOLDER="/opt/containers/$STACK"
+# Remote-Name (muss in rclone.conf definiert sein)
+RC_REMOTE_NAME="example-backup"
 # Zielpfad
-RC_REMOTE_FOLDER="/var/local/data/clones/$NAME"
+RC_REMOTE_FOLDER="/var/local/data/clones/$STACK"
+# wenig Ausnahmen definieren, um das Risiko von Fehlkonfigurationen zu vermeiden
+RC_EXCEPTIONS=(--exclude=@eaDir/ --exclude=.DS_Store)
+# Weitere Parameter, siehe https://rclone.org/flags/
+RC_PARAMS="-v --stats-one-line --sftp-md5sum-command=/usr/bin/md5sum --skip-links"
 ```
 
 ### Telegram-Konfiguration
