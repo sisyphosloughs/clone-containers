@@ -94,4 +94,9 @@ TELEGRAM_SEND=true
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
 2. Erstelle die Konfigurationsdateien.
 3. Teste das Backup.
-4. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) auf dem Computer für das Skript `clone-containers.sh`.
+4. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) auf dem Computer für das Skript `clone-containers.sh`. Beispiel:
+   ```
+   # Docker-Instanzen Klonen
+   50 5 * * * /home/user/bin/clone-containers/source/clone-containers.sh > /dev/null 2>&1
+   ```
+
