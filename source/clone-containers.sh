@@ -1,15 +1,20 @@
 #!/bin/bash
 
-# Siehe README.md
+# Dieses Skript synchronisiert Docker-Container mit einem 
+# Remote-Speicherort und verwaltet deren Status.
+# Mehr siehe README.md
 
 # Debugging
 # set -x
 
-# Funktionen einfügen
+# Externe Funktionen und Logger einbinden
 source "$(dirname "$(realpath "$0")")/../bash-functions/init.sh"
 source "$(dirname "$(realpath "$0")")/../bash-functions/functions.sh"
 source "$(dirname "$(realpath "$0")")/../bash-functions/setup_logger.sh"
 
+# Funktion: clone_wrapper
+# Zweck: Synchronisiert eine Docker-Instanz mit einem Remote-Speicherort
+# Parameter: $1 - Pfad zur Konfigurationsdatei der Instanz
 clone_wrapper() {
     
     # Konfiguration einlesen
@@ -54,16 +59,18 @@ clone_wrapper() {
     fi
 
     # FLAG-DATEI erstellen
+    # Die Flag-Datei wird im Quellordner erstellt und dann zum Remote-Ordner kopiert
     TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
     if [ $ERROR_FLAG -eq 1 ]; then
-        echo "[INFO] Erstelle Datei: CLONE-FAILED"
-        echo "Last sync attempt: $TIMESTAMP" > "$RC_SOURCE_FOLDER/CLONE-FAILED"
-        rclone copy "$RC_SOURCE_FOLDER/CLONE-FAILED" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER"
-
+        CLONE_STATUS_NAME="CLONE-FAILED"
+        echo "[INFO] Erstelle Flag-Datei: $CLONE_STATUS_NAME"
+        echo "Last sync attempt: $TIMESTAMP" > "$RC_SOURCE_FOLDER/$CLONE_STATUS_NAME"
+        rclone copy "$RC_SOURCE_FOLDER/$CLONE_STATUS_NAME" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER"
     else
-        echo "[INFO] Erstelle Datei: CLONE-SUCCESS"
-        echo "Last sync: $TIMESTAMP" > "$RC_SOURCE_FOLDER/CLONE-SUCCESS"
-        rclone copy "$RC_SOURCE_FOLDER/CLONE-SUCCESS" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER"
+        CLONE_STATUS_NAME="CLONE-SUCCESS"
+        echo "[INFO] Erstelle Flag-Datei: $CLONE_STATUS_NAME"
+        echo "Last sync: $TIMESTAMP" > "$RC_SOURCE_FOLDER/$CLONE_STATUS_NAME"
+        rclone copy "$RC_SOURCE_FOLDER/$CLONE_STATUS_NAME" "$RC_REMOTE_NAME":"$RC_REMOTE_FOLDER"
     fi
 
     # Instanz starten
