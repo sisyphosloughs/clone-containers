@@ -1,8 +1,32 @@
-# Clone Contaisers
+# Clone Containers
 
 `clone-containers.sh` ist ein Skript zur Automatisierung des Backups von Docker-Containern betrieben. Dabei werden die Container heruntergefahren, um sie vollständig kopieren zu können. Das Skript liest Konfigurationsdateien aus, die spezifische Angaben zu jedem Container enthalten, um ein Backup durchzuführen.
 
 Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Backups ermöglicht.
+
+## Übersischt
+
+```
++-------------------------------+     +-------------------------------+
+|          Computer A           |     |          Computer B           |
+|    (clone-containers.sh)      |     |     (restart-containers.sh)   |
++-------------------------------+     +-------------------------------+
+|                               |     |                               |
+|  [Crontab-Start]              |     |  [Crontab-Start]              |
+|       │                       |     |       │                       |
+|       ▼                       |     |       ▼                       |
+|  stop Container-Stack         |     |  stop Container-Stack         |
+|       │                       |     |       │                       |
+|  sync Daten  ─────────────────────────► (Empfängt Daten)            |
+|  sync Status-Flag ────────────────────► prüft Status-Flag           |
+|       │                       |     |       │                       |
+|  start Container-Stack        |     |  start Container-Stack        |
+|       │                       |     |       │                       |
+|  optional Telegram-Info       |     |  optional Telegram-Info       |
+|                               |     |                               |
+|  (läuft unabhängig)           |     |  (läuft unabhängig)           |
++-------------------------------+     +-------------------------------+
+```
 
 ## Voraussetzungen
 
