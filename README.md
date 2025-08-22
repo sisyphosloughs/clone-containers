@@ -9,7 +9,8 @@ Bei der Synchronisierung kommen zwei Skripte zum Einsatz:
 - `clone-containers.sh` auf dem Source-Computer: Dieses Skript übernimmt das Stoppen der Container, das Erstellen des Backups und die Übertragung der Daten.
 - `restart-containers.sh` auf dem Target-Computer: Dieses Skript prüft den Status und startet die Container auf dem Sicherungscomputer.
 
-**Achtung**: Der Ansatz basiert darauf, dass die Container vom Source- und Target-Computer kurz gestoppt werden. Da für die Übertragung `rclone` verwendet wird, ist die Unterbrechung sehr kurz, da `rclone` nur geänderte Daten übertragen muss.
+> [!NOTE]
+> Der Ansatz basiert darauf, dass die Container vom Source- und Target-Computer kurz gestoppt werden. Da für die Übertragung `rclone` verwendet wird, ist die Unterbrechung sehr kurz, da `rclone` nur geänderte Daten übertragen muss.
 
 ## Übersicht
 
