@@ -111,7 +111,7 @@ STACK="example"
 # Pfad in dem sich die `docker-compose.yml`-Datei befindet
 STACK_DOCKER_COMPOSE="/opt/containers/$STACK"
 # Pfad in dem sich die übertragenen Daten mit der Flag-Datei befinden
-STACK_DOCKER_COMPOSE="/var/backup/containers/$STACK"
+STACK_CLONE_DATA="/var/backup/containers/$STACK"
 ```
 
 ### Telegram-Konfiguration
