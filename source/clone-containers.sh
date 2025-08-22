@@ -30,7 +30,8 @@ clone_wrapper() {
     echo "[INFO] Stoppe Instanz: $STACK"
     docker compose -f "$RC_SOURCE_FOLDER/docker-compose.yml" down
     if [ $? -ne 0 ]; then
-        echo "[ERROR] Konnte Instanz nicht stoppen wechseln: $STACK"
+        echo "[ERROR] Konnte Instanz nicht stoppen: $STACK"
+        error_continue
         return 1
     else
         echo "[INFO] Instanz gestoppt: $STACK"
@@ -44,6 +45,7 @@ clone_wrapper() {
     # ERROR_FLAG setzen, wenn rclone Fehler zurückgibt
     if [ $? -ne 0 ]; then
         ERROR_FLAG=1
+        error_continue
     else
         ERROR_FLAG=0
     fi
@@ -56,6 +58,7 @@ clone_wrapper() {
     # ERROR_FLAG setzen, wenn rclone Fehler zurückgibt
     if [ $? -ne 0 ]; then
         ERROR_FLAG=1
+        error_continue
     fi
 
     # FLAG-DATEI erstellen
@@ -78,6 +81,7 @@ clone_wrapper() {
     docker compose -f "$RC_SOURCE_FOLDER/docker-compose.yml" up -d
     if [ $? -ne 0 ]; then
         echo "[ERROR] Konnte Instanz nicht starten: $STACK"
+        error_continue
         return 1
     else
         echo "[INFO] Instanz gestartet: $STACK"
