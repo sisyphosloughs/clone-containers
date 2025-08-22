@@ -1,6 +1,6 @@
 # Clone Containers
 
-Clone Containers besteht aus Skripten zur Automatisierung des Backups von Docker-Containern.
+Clone Containers sind Skript zur Automatisierung des Backups von Docker-Containern. Ziel die Erstellung eines laufendens Docker-Duplikat.
 
 Die Synchronisierung erfolgt unidirektional mit `rclone`: Daten vom Quellcomputer (im Folgenden **Source-Computer**) werden auf den Sicherungscomputer (im Folgenden **Target-Computer**) vollständig übertragen. Dadurch sind Datenbanksicherungen nicht erforderlich. 
 
@@ -147,12 +147,14 @@ Source-Computer einrichten:
 4. Erstelle die Konfigurationsdatei für die Telegram-Benachrichtigung (siehe [Telegram-Konfiguration](#telegram-konfiguration)).
 5. Teste das Backup.
 6. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) für das Skript `clone-containers.sh`. Beispiel:
-     ```
-     # Docker-Instanzen klonen
-     50 5 * * * /home/user/bin/clone-containers/source/clone-containers.sh > /dev/null 2>&1
-     ```
+    ```
+    # Docker-Instanzen klonen
+    50 5 * * * /home/user/bin/clone-containers/source/clone-containers.sh > /dev/null 2>&1
+    ```
 
 Target-Computer einrichten:
+
+**Hinweis**: Möglicherweise sind in der `docker-compose.yml` des Source-Computers Pfade oder andere Angaben enthalten, die nicht zum Target-Computer passen. In dem Fall solltest Du eine separate Docker-Konfiguration auf dem Target-Computer mit eigener `docker-compose.yml` anlegen.
 
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
 2. Mache die Skript-Datei ausführbar:
@@ -166,7 +168,7 @@ Target-Computer einrichten:
 4. Erstelle die Konfigurationsdatei für die Telegram-Benachrichtigung (siehe [Telegram-Konfiguration](#telegram-konfiguration)).
 5. Teste den Neustart.
 6. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) für das Skript `restart-containers.sh`. Beispiel:
-     ```
-     # Geklonte Docker-Instanzen neustarten
-     50 5 * * * /home/user/bin/clone-containers/target/restart-containers.sh > /dev/null 2>&1
-     ```
+    ```
+    # Geklonte Docker-Instanzen neustarten
+    50 5 * * * /home/user/bin/clone-containers/target/restart-containers.sh > /dev/null 2>&1
+    ```
