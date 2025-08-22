@@ -8,7 +8,7 @@ Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Back
 
 ```
 +-------------------------------+     +-------------------------------+
-|          Computer A           |     |          Computer B           |
+|      Computer A (source)      |     |     Computer B (target)       |
 |    (clone-containers.sh)      |     |     (restart-containers.sh)   |
 +-------------------------------+     +-------------------------------+
 |                               |     |                               |
@@ -31,26 +31,30 @@ Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Back
 ## Voraussetzungen
 
 - Eine lauffähige Docker-Umgebung.
+- **Rclone Installation**: Must install Rclone. You can find installation instructions at [Rclone installation instructions](https://rclone.org/install/).
+- **Passwordless Rclone Configuration**: Configure without requiring a password.
 - Ein Telegram-API-Key und eine Telegram-Chat-ID für Benachrichtigungen.
-- Eine Linux-Distribution, die `journalctl` unterstützt, z.B. Ubuntu.
+- Ein SFTP-Client für Rclone als Ziel. Zu Minimierung der Angriffsfläche sollte kein SSH, sondern nur SFTP aktiviert sein.
 
 ## Konfiguration
 
 Für die Funktionsfähigkeit des Skripts müssen die folgenden Dateien bearbeitet werden:
 
 ```
-├── clone-contaiers.sh
 ├── bash-functions
 │   ├── functions.sh
 │   ├── init.sh
 │   ├── README.md
 │   └── setup_logger.sh
-├── instances
-│   ├── container1.conf  <-- Instanz-Konfigurationsdatei
-│   ├── container2.conf  <-- Instanz-Konfigurationsdatei
-│   └── container3.conf  <-- Instanz-Konfigurationsdatei
 ├── README.md
-└── telegram.secrets     <-- Telegram-Konfiguration
+├── source
+│   ├── clone-containers.sh
+│   ├── instances
+│   │   ├── container.conf.sample  <-- Instanz-Konfigurationsdatei, Beisppiel
+│   │   └── your-stack1.conf       <-- Instanz-Konfigurationsdate
+│   │   └── your-stack2.conf       <-- Instanz-Konfigurationsdate
+│   └── telegram.secrets           <-- Telegram-Konfiguration
+└── target
 ```
 
 ### Instanz-Konfigurationsdateien

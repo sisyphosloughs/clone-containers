@@ -2,10 +2,13 @@
 
 # Siehe README.md
 
+# Debugging
+# set -x
+
 # Funktionen einfügen
-source "$(dirname "$(realpath "$0")")/bash-functions/init.sh"
-source "$(dirname "$(realpath "$0")")/bash-functions/functions.sh"
-source "$(dirname "$(realpath "$0")")/bash-functions/setup_logger.sh"
+source "$(dirname "$(realpath "$0")")/../bash-functions/init.sh"
+source "$(dirname "$(realpath "$0")")/../bash-functions/functions.sh"
+source "$(dirname "$(realpath "$0")")/../bash-functions/setup_logger.sh"
 
 clone_wrapper() {
     
@@ -19,6 +22,7 @@ clone_wrapper() {
     fi
 
     # Instanz stoppen
+    echo "[INFO] Stoppe Instanz: $STACK"
     docker compose -f "$RC_SOURCE_FOLDER/docker-compose.yml" down
     if [ $? -ne 0 ]; then
         echo "[ERROR] Konnte Instanz nicht stoppen wechseln: $STACK"
