@@ -24,9 +24,9 @@ Für die Funktionsfähigkeit des Skripts müssen die folgenden Dateien bearbeite
 ├── instances
 │   ├── container1.conf  <-- Instanz-Konfigurationsdatei
 │   ├── container2.conf  <-- Instanz-Konfigurationsdatei
-│   └── container3.conf    <-- Instanz-Konfigurationsdatei
+│   └── container3.conf  <-- Instanz-Konfigurationsdatei
 ├── README.md
-└── telegram.secrets   <-- Telegram-Konfiguration
+└── telegram.secrets     <-- Telegram-Konfiguration
 ```
 
 ### Instanz-Konfigurationsdateien
@@ -66,3 +66,4 @@ TELEGRAM_SEND=true
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
 2. Erstelle Konfigurationsdateien.
 3. Teste das das Backup.
+4. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) auf dem Computer für das Script `clone-contaiers.sh`.
