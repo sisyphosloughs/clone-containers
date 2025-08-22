@@ -1,6 +1,6 @@
 # Clone Containers
 
-Clone Containers besteht aus Scripten zur Automatisierung des Backups von Docker-Containern.
+Clone Containers besteht aus Skripten zur Automatisierung des Backups von Docker-Containern.
 
 Die Synchronisierung erfolgt unidirektional mit `rclone`: Daten vom Quellcomputer (im Folgenden **Source-Computer**) werden auf den Sicherungscomputer (im Folgenden **Target-Computer**) vollständig übertragen. Dadurch sind Datenbanksicherungen nicht erforderlich. 
 
@@ -10,8 +10,6 @@ Bei der Synchronisierung kommen zwei Skripte zum Einsatz:
 - `restart-containers.sh` auf dem Target-Computer: Dieses Skript prüft den Status und startet die Container auf dem Sicherungscomputer.
 
 **Achtung**: Der Ansatz basiert darauf, dass die Container vom Source- und Target-Computer kurz gestoppt werden. Da für die Übertragung `rclone` verwendet wird, ist die Unterbrechung sehr kurz, da `rclone` nur geänderte Daten übertragen muss.
-
-Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Backups ermöglicht.
 
 ## Übersicht
 
@@ -31,7 +29,7 @@ Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Back
 |       │                       |     |       │                       |
 |  start Container-Stack        |     |  start Container-Stack        |
 |       │                       |     |       │                       |
-|  optional Telegram-Info       |     |  optional Telegram-Info       |
+|  optionale Telegram-Info      |     |  optionale Telegram-Info      |
 |                               |     |                               |
 |  (läuft unabhängig)           |     |  (läuft unabhängig)           |
 +-------------------------------+     +-------------------------------+
@@ -40,14 +38,15 @@ Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Back
 ## Voraussetzungen
 
 - Eine lauffähige Docker-Umgebung.
-- **Rclone-Installation**: Rclone muss auf dem Source-Computer vorhanden sein. Installationsanweisungen findest Du unter [Rclone-Installationsanweisungen](https://rclone.org/install/).
-- **Passwortlose Rclone-Konfiguration**: Richte Rclone so ein, dass keine Passwortabfrage erforderlich ist.
+- **Rclone-Installation**: `rclone` muss auf dem Source-Computer vorhanden sein. Installationsanweisungen findest du unter [Rclone-Installationsanweisungen](https://rclone.org/install/).
+- **Passwortlose Rclone-Konfiguration**: Richte `rclone`so ein, dass keine Passwortabfrage erforderlich ist.
 - Ein Telegram-API-Schlüssel und eine Telegram-Chat-ID für Benachrichtigungen.
-- Ein SFTP-Client für Rclone als Ziel. Zu Minimierung der Angriffsfläche sollte kein SSH, sondern nur SFTP aktiviert sein.
+- Ein SFTP-Client für `rclone`als Ziel. Zur Minimierung der Angriffsfläche sollte kein SSH, sondern nur SFTP aktiviert sein.
+- Für das Logging wird Syslog verwendet, was die Auswertung zurückliegender Backups ermöglicht. Falls Syslog auf dem Computer nicht vorhanden ist, sind die Logdateien leer.
 
 ## Struktur
 
-Für die Funktionsfähigkeit der Skripte müssen die folgende Dateien bearbeitet werden:
+Für die Funktionsfähigkeit der Skripte müssen die folgenden Dateien bearbeitet werden:
 
 ```
 ├── bash-functions
@@ -80,14 +79,12 @@ Das Skript erwartet Konfigurationsdateien im Ordner `instances` mit der Endung `
 
 Jede Konfigurationsdatei enthält Schlüssel-Wert-Paare, die das Skript für das Durchführen des Backups benötigt. Die Schlüssel und ihre Bedeutungen werden nachfolgend erläutert:
 
-#### Beispiele
-
-Konfiguration von Source-Stacks:
+#### Beispiele für Source-Stacks
 
 ```conf
 # Stack-Name
 STACK="example"
-# Überspringen, setzte hierfür SKIP="true"
+# Überspringen, setze hierfür SKIP="true"
 # SKIP="true"
 # Pfad, der gesichert werden soll
 RC_SOURCE_FOLDER="/opt/containers/$STACK"
@@ -95,22 +92,22 @@ RC_SOURCE_FOLDER="/opt/containers/$STACK"
 RC_REMOTE_NAME="example-backup"
 # Zielpfad
 RC_REMOTE_FOLDER="/var/local/data/clones/$STACK"
-# wenig Ausnahmen definieren, um das Risiko von Fehlkonfigurationen zu vermeiden
+# Wenige Ausnahmen definieren, um das Risiko von Fehlkonfigurationen zu vermeiden
 RC_EXCEPTIONS=(--exclude=@eaDir/ --exclude=.DS_Store)
 # Weitere Parameter, siehe https://rclone.org/flags/
 RC_PARAMS="-v --stats-one-line --sftp-md5sum-command=/usr/bin/md5sum --skip-links"
 ```
 
-Konfiguration von Target-Stacks:
+#### Beispiele für Target-Stacks
 
 ```conf
 # Stack-Name
 STACK="example"
-# Überspringen, setzte hierfür SKIP="true"
+# Überspringen, setze hierfür SKIP="true"
 # SKIP="true"
-# Pfad in dem sich die `docker-compose.yml`-Datei befindet
+# Pfad, in dem sich die `docker-compose.yml`-Datei befindet
 STACK_DOCKER_COMPOSE="/opt/containers/$STACK"
-# Pfad in dem sich die übertragenen Daten mit der Flag-Datei befinden
+# Pfad, in dem sich die übertragenen Daten mit der Flag-Datei befinden
 STACK_CLONE_DATA="/var/backup/containers/$STACK"
 ```
 
@@ -119,8 +116,9 @@ STACK_CLONE_DATA="/var/backup/containers/$STACK"
 Die Konfigurationsdatei `telegram.secrets` enthält Angaben für Telegram. Selbst wenn kein Versand mit Telegram gewünscht ist, muss eine Pseudo-Konfiguration mit dem Wert `false` für den Schlüssel `TELEGRAM_SEND` vorhanden sein.
 
 Legt die Datei in den jeweils passenden Ordner ab:
+
 - Source-Computer `../clone-containers/source/telegram.secrets`
-- Source-Computer `../clone-containers/target/telegram.secrets`
+- Target-Computer `../clone-containers/target/telegram.secrets`
 
 Inhalt der `telegram.secrets`:
 
@@ -135,13 +133,40 @@ TELEGRAM_SEND=true
 
 ### Installation
 
-Source-Computer:
+Source-Computer einrichten:
 
 1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
-2. Erstelle die Konfigurationsdateien.
-3. Teste das Backup.
-4. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) auf dem Computer für das Skript `clone-containers.sh`. Beispiel:
-   ```
-   # Docker-Instanzen Klonen
-   50 5 * * * /home/user/bin/clone-containers/source/clone-containers.sh > /dev/null 2>&1
-   ```
+2. Mache die Skript-Datei ausführbar:
+    ```sh
+    chmod +x source/clone-containers.sh
+    chmod +x bash-functions/init.sh
+    chmod +x bash-functions/functions.sh
+    chmod +x bash-functions/setup_logger.sh
+    ```
+3. Erstelle die Konfigurationsdateien für die Source-Instanzen (siehe [Beispiele für Source-Stacks](#beispiele-für-source-stacks)).
+4. Erstelle die Konfigurationsdatei für die Telegram-Benachrichtigung (siehe [Telegram-Konfiguration](#telegram-konfiguration)).
+5. Teste das Backup.
+6. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) für das Skript `clone-containers.sh`. Beispiel:
+     ```
+     # Docker-Instanzen klonen
+     50 5 * * * /home/user/bin/clone-containers/source/clone-containers.sh > /dev/null 2>&1
+     ```
+
+Target-Computer einrichten:
+
+1. Lade das Skript zusammen mit dem Unterordner `bash-functions` herunter.
+2. Mache die Skript-Datei ausführbar:
+    ```sh
+    chmod +x target/restart-containers.sh
+    chmod +x bash-functions/init.sh
+    chmod +x bash-functions/functions.sh
+    chmod +x bash-functions/setup_logger.sh
+    ```
+3. Erstelle die Konfigurationsdateien für die Target-Instanzen (siehe [Beispiele für Target-Stacks](#beispiele-für-target-stacks)).
+4. Erstelle die Konfigurationsdatei für die Telegram-Benachrichtigung (siehe [Telegram-Konfiguration](#telegram-konfiguration)).
+5. Teste den Neustart.
+6. Erstelle einen [Crontab-Eintrag](https://de.wikipedia.org/wiki/Cron) für das Skript `restart-containers.sh`. Beispiel:
+     ```
+     # Geklonte Docker-Instanzen neustarten
+     50 5 * * * /home/user/bin/clone-containers/target/restart-containers.sh > /dev/null 2>&1
+     ```

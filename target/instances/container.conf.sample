@@ -2,9 +2,9 @@
 
 # Stack-Name
 STACK="example"
-# Überspringen, setzte hierfür SKIP="true"
+# Überspringen, setze hierfür SKIP="true"
 # SKIP="true"
-# Pfad in dem sich die `docker-compose.yml`-Datei befindet
+# Pfad, in dem sich die `docker-compose.yml`-Datei befindet
 STACK_DOCKER_COMPOSE="/opt/containers/$STACK"
-# Pfad in dem sich die übertragenen Daten mit der Flag-Datei befinden
+# Pfad, in dem sich die übertragenen Daten mit der Flag-Datei befinden
 STACK_CLONE_DATA="/var/backup/containers/$STACK"
