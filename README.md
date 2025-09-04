@@ -1,6 +1,18 @@
 # Clone Containers
 
-Clone Containers sind Skript zur Automatisierung des Backups von Docker-Containern. Ziel die Erstellung eines laufendens Docker-Duplikat.
+**Clone Containers** sind eine leichtgewichtige Lösung, um komplette Docker-Stacks regelmäßig zu sichern und auf einem zweiten System lauffähig bereitzustellen.
+
+## Warum?
+
+Im Gegensatz zu klassischen **Datenbankreplikationen** oder komplexen Backup-Strategien, bei denen Daten während des Betriebs konsistent und kontinuierlich synchronisiert werden, verfolgt *Clone Containers* einen pragmatischen Ansatz:
+
+- **Keine Live-Replikation:** Statt einzelne Datenbanken fortlaufend zu spiegeln, werden die gesamten Container-Verzeichnisse kurzzeitig gestoppt, synchronisiert und auf dem Zielsystem als vollständige Kopie bereitgestellt.  
+- **Einfache Wiederherstellung:** Das Zielsystem erhält eine 1:1-Kopie aller Container-Daten und kann die Instanzen unabhängig vom Quellsystem starten.  
+- **Minimaler Konfigurationsaufwand:** Es sind weder Datenbank-spezifische Replikationsmechanismen noch komplexe Backup-Lösungen erforderlich – nur Docker, `rclone` und zwei Skripte.  
+
+Dieser Ansatz ist besonders geeignet, wenn ein **laufendes Duplikat** des gesamten Docker-Stacks benötigt wird, etwa für Testsysteme, Redundanz-Setups oder schnelle Recovery-Szenarien – ohne sich mit den Details einer kontinuierlichen Datenbankspiegelung beschäftigen zu müssen.
+
+## Übersicht
 
 Die Synchronisierung erfolgt unidirektional mit [Rclone](https://rclone.org): Daten vom Quellcomputer (im Folgenden **Source-Computer**) werden auf den Sicherungscomputer (im Folgenden **Target-Computer**) vollständig übertragen. Dadurch sind Datenbanksicherungen nicht erforderlich. 
 
@@ -11,8 +23,6 @@ Bei der Synchronisierung kommen zwei Skripte zum Einsatz:
 
 > [!NOTE]
 > Der Ansatz basiert darauf, dass die Container vom Source- und Target-Computer kurz gestoppt werden. Da für die Übertragung `rclone` verwendet wird, ist die Unterbrechung sehr kurz, da `rclone` nur geänderte Daten übertragen muss.
-
-## Übersicht
 
 ```
 +-------------------------------+     +-------------------------------+
